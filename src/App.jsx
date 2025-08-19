@@ -1,14 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FaDeleteLeft } from "react-icons/fa6";
 
 function App() {
 
-  const [history , setHistory] = useState([]);
+  const [history , setHistory] = useState(() => {
+    const stored = localStorage.getItem("history");
+    return stored ? JSON.parse(stored) : [];
+  });
   const [transaction , setTransaction] = useState("");
   const [amount , setAmount] = useState(null);
-  const [balance , setBalance] = useState(0.00);
-  const [income , setIncome] = useState(0.00);
-  const [expense , setExpense] = useState(0.00);
+
+  const [balance , setBalance] = useState(() => {
+    const stored = localStorage.getItem("balance");
+    return stored ? parseFloat(stored) : 0.00;
+  });
+  const [income , setIncome] = useState(() => {
+    const stored = localStorage.getItem("income");
+    return stored ? parseFloat(stored) : 0.00;
+  });
+  const [expense , setExpense] = useState(() => {
+    const stored = localStorage.getItem("expense");
+    return stored ? parseFloat(stored) : 0.00;
+  });
+
   const [showHistory , setShowHistory] = useState(false);
   const [isIncome , setIsIncome] = useState(true);
 
@@ -44,6 +58,13 @@ function App() {
     setHistory([...history]);
   }
 
+  useEffect(()=>{
+    if(history.length != 0) localStorage.setItem("history", JSON.stringify(history));
+    if(balance != 0) localStorage.setItem("balance", balance);
+    if(income != 0) localStorage.setItem("income", income);
+    if(expense != 0) localStorage.setItem("expense", expense);
+  },[history]);
+  
   return (
     <div className='w-full h-max flex justify-center items-start py-25 bg-[#DAF1DE] '>
       <div className='md:w-[400px] w-[350px]  h-max p-5 border space-y-4 rounded bg-white'>
